@@ -36,33 +36,57 @@ def decodeCSV(filePath):
 
         return fields, values
 
-def dataPipeline(inFields, CLData, DLData):
+def dataPipeline(dlTargetName, CLData, DLData):
 
-    def splitData():
+    workingChunk1 = []
+    t = 0
+
+    def filterColumns():
+
+        workingChunk1.append(t)        # t
+        t += 1
+
+        workingChunk1.append(CLData[?]) # cl_open
+        workingChunk1.append(CLData[?]) # cl_high
+        workingChunk1.append(CLData[?]) # cl_low
+        workingChunk1.append(CLData[?]) # cl_close
+        workingChunk1.append(CLData[?]) # cl_adjclose
+        workingChunk1.append(CLData[?]) # cl_vol
+                                    
+        workingChunk1.append(DLData[?]) # dl_open
+        workingChunk1.append(DLData[?]) # dl_target
+
+    def splitRows():
         
-    
-    outFields = []
+        
     
     return ''
 
-# fetchChunk(4, 2) -> outer chunk
-# t        = this timestep
-# N        = amount of previous days to use for training
-# dlTarget = string representing the name of the selected DL target field
-def fetchChunk(t, dlTarget):
+def makeChunk(t, dlTarget, data):
+
+    innerChunks = []
+
+    for  in :
+        dlTarget_tn = data[t][?]
+
+        innerChunk = dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn
+        innerChunks.append(innerChunk)
 
     chunk = {
-        "inputs" : {
-            
-        }
+        "inputs" : [
+            [data[t][]??]
+        ],
+        "target" : dlTarget
     }
+
+    chunk["inputs"].extend(prevChunks)
 
     return chunk
 
-# unpackChunkOuter(chunk) -> dlTarget_t, dlOpen_t, clOpen_t, prevChunks
+# unpackChunkOuter(chunk) -> dlTarget_t, dlOpen_t, clOpen_t, innerChunk
 def unpackChunkOuter(chunk):
 
-    # dlTarget_t, dlOpen_t, clOpen_t, prevChunks
+    # dlTarget_t, dlOpen_t, clOpen_t, innerChunk
     return chunk["target"], chunk["inputs"][0][0], chunk["inputs"][0][1], chunk["inputs"][1:]
 
 # unpackChunkInner(innerChunkn) -> dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn

@@ -11,7 +11,10 @@ F.tryPrint("TEST START")
 
 ######################################################
 
+fields, CLValues = F.decodeCSV(P.clDataPath)
+_, DLValues = F.decodeCSV(P.dlDataPath)
 
+print(CLValues)
 
 ######################################################
 

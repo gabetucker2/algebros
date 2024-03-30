@@ -2,7 +2,7 @@
 import os
 
 ######################################################
-# dynamic parameters
+# main parameters
 
 debuggingMode = False # False means that things will print normally; True disables "tryPrint()" so only "print()" shows useful for debugging
 
@@ -16,7 +16,7 @@ workingMemory = [] # a list or matrix of data that is updated over time by the m
 
 ######################################################
 
-# static parameters
+# path parameters
 projectPath = f'{os.getcwd()}\\'
 
 inputFolderPath = f'{projectPath}input\\'
