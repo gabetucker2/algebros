@@ -15,6 +15,11 @@ def tryPrint(output):
     if not P.debuggingMode:
         print(output)
 
+# math functions
+
+def LERP(start, end, t):
+    return (1 - t) * start + t * end
+
 # data functions
 
 def decodeCSV(filePath):
@@ -30,14 +35,14 @@ def decodeCSV(filePath):
             raise ValueError("CSV file must have at least two rows")
         
         # First row for keys, second row for values
-        fields = rows[0]
+        fields = rows[0][1:] # exclude first column (date)
         values = []
         for row in rows[1:]:
-            values.append(row)
+            values.append([float(value) for value in row[1:]])
 
         return fields, values
 
-def filterColumns(daTargetName, fieldNames, clData, daData):
+def combineChunks(fieldNames, clData, daData):
 
     outerChunks = []
 
@@ -51,40 +56,51 @@ def filterColumns(daTargetName, fieldNames, clData, daData):
             "inputs" : [
                 [daData[t][1], clData[t][1]]
             ],
-            "target" : daData[t][fieldNames.index(daTargetName)]
+            "target" : daData[t][fieldNames.index(P.daTargetName)]
         }
 
         # create inner chunk
 
         innerChunks = []
 
-        for n in range(1, P.N): # n-back
+        for n in range(1, P.N+1): # n-back
 
             tn = t - n
 
             newList = []
 
-            newList.append(daData[tn][fieldNames.index(daTargetName)]) # da_target
-            newList.append(daData[tn][1])                              # da_open
+            newList.append(daData[tn][fieldNames.index(P.daTargetName)]) # da_target
+            newList.append(daData[tn][0])                              # da_open (date is popped)
 
-            newList.append(clData[tn][1])                              # cl_open
-            newList.append(clData[tn][2])                              # cl_high
-            newList.append(clData[tn][3])                              # cl_low
-            newList.append(clData[tn][4])                              # cl_close
-            newList.append(clData[tn][5])                              # cl_adjclose
-            newList.append(clData[tn][6])                              # cl_vol
+            newList.append(clData[tn][0])                              # cl_open
+            newList.append(clData[tn][1])                              # cl_high
+            newList.append(clData[tn][2])                              # cl_low
+            newList.append(clData[tn][3])                              # cl_close
+            newList.append(clData[tn][4])                              # cl_adjclose
+            newList.append(clData[tn][5])                              # cl_vol
 
             innerChunks.append(newList)
         
         outerChunk["inputs"].extend(innerChunks)
+
+        outerChunks.append(outerChunk)
     
     return outerChunks
 
-def splitRows():
+def splitChunks(combinedChunks):
     
     rand_ui = random.random()
 
-    
+    totalLength = len(combinedChunks)
+    testLength = int(totalLength * (1 - P.ratioTrainTest))
+
+    r = int(LERP(0, totalLength - testLength, rand_ui))
+    R = r + testLength
+
+    trainChunks = combinedChunks[P.N:r] + combinedChunks[R+P.N:]
+    testChunks = combinedChunks[r+P.N:R]
+
+    return trainChunks, testChunks
 
 # unpackChunkOuter(chunk) -> daTarget_t, daOpen_t, clOpen_t, innerChunk
 def unpackChunkOuter(chunk):

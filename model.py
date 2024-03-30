@@ -1,6 +1,7 @@
 # script imports
 import functions as F
 import parameters as P
+import functions_MLR
 
 # shell
 F.tryPrintBreak()
@@ -11,27 +12,36 @@ F.tryPrint("MODEL START")
 # import training data
 F.tryPrint("Importing training data")
 
-fields, clData = F.decodeCSV(P.clDataPath)
+fieldNames, clData = F.decodeCSV(P.clDataPath)
 _, daData = F.decodeCSV(P.daDataPath)
 
 # run main routine
-averageError = 0
+totalEpochError = 0
 
-for epoch in P.epochs:
+for epoch in range(P.epochs):
 
-    error = 0
-    
-    for chunk in trainingData:
+    combinedChunks = F.combineChunks(fieldNames, clData, daData)
+    trainChunks, testChunks = F.splitChunks(combinedChunks)
+
     # train
-        train(F.unpackChunk(chunk))
+    for trainChunk in trainChunks:
+        functions_MLR.trainMLRLoop(trainChunk)
+    functions_MLR.trainMLRFinal(len(trainChunks))
 
-    for chunk in testingData:
     # test
-        totalError += ?
-    
-        error = totalError / nTestData
+    totalChunkError = 0
+    for testChunk in testChunks:
+        chunkError = functions_MLR.testMLR(testChunk)
+        totalChunkError += chunkError
+        # F.tryPrint(f"CHUNK ERROR: {chunkError}")
+    epochError = totalChunkError / len(testChunks)
+    totalEpochError += epochError
 
-averageError = totalError / nEpochs
+    F.tryPrint(f"EPOCH {epoch+1} ERROR: {epochError}")
+
+averageEpochError = totalEpochError / P.epochs
+
+F.tryPrint(f"AVERAGE ERROR ACROSS {P.epochs} EPOCHS: {averageEpochError}")
 
 ######################################################
 

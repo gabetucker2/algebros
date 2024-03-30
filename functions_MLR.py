@@ -2,35 +2,28 @@
 import pandas as pd
 import numpy as np
 import statsmodels.api as sm
-from statsmodels.tsa.stattools import adfuller
 
 # import scripts
 import parameters as P
 import functions as F
 
 # functions
-numChunks = 0
 
 def trainMLRLoop(chunk):
 
-    numChunks += 1
-
-    X_train = []
-    
-    daTarget_t, daOpen_t, clOpen_t, innerChunkn = F.unpackChunkOuter(chunk)
-
-    X_train.append(daOpen_t, clOpen_t)
-
+    dlTarget_t, dlOpen_t, clOpen_t, innerChunkn = F.unpackChunkOuter(chunk)
+    X_train = [dlOpen_t, clOpen_t]
     for n in range(P.N):
-        daTarget_tn, daOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn = F.unpackChunkInner(innerChunkn[n])
-        X_train.append(daTarget_tn, daOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn)
+        dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn = F.unpackChunkInner(innerChunkn[n])
+        X_train.extend([dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn])
 
-    Y_train = daTarget_t
+    Y_train = [dlTarget_t]
+    X_train = [X_train] # make X_train 2D
 
     model = sm.OLS(Y_train, X_train).fit()
 
     alpha = model.params[0]
-    betas = model.params[1:].values
+    betas = model.params[1:]
 
     if len(P.workingMemory) == 0:
         P.workingMemory.append(alpha)
@@ -40,7 +33,7 @@ def trainMLRLoop(chunk):
         for c in range(len(X_train)):
             P.workingMemory[c+1] += betas[c]
 
-def trainMLRFinal():
+def trainMLRFinal(numChunks):
     
     # average the coefficients across each chunk MLR was ran on
 
@@ -51,21 +44,19 @@ def trainMLRFinal():
 
 def testMLR(chunk):
 
-    X_train = []
-    
-    daTarget_t, daOpen_t, clOpen_t, innerChunkn = F.unpackChunkOuter(chunk)
-
-    X_train.append(daOpen_t, clOpen_t)
-
+    dlTarget_t, dlOpen_t, clOpen_t, innerChunkn = F.unpackChunkOuter(chunk)
+    X_train = [dlOpen_t, clOpen_t]
     for n in range(P.N):
-        daTarget_tn, daOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn = F.unpackChunkInner(innerChunkn[n])
-        X_train.append(daTarget_tn, daOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn)
+        dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn = F.unpackChunkInner(innerChunkn[n])
+        X_train.extend([dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn])
 
-    actualValue = daTarget_t
+    actualValue = dlTarget_t
 
     predictedValue = P.workingMemory[0]
     # dot product to calculate predicted value
-    for i in range(len(P.workingMemory)):
-        predictedValue += P.workingMemory[i+1] * X_train[i]
+    for i in range(1, len(P.workingMemory)):
+        predictedValue += P.workingMemory[i] * X_train[i] # keep in mind X_train is 1D here but 2D in the actual training model
 
-    return actualValue - predictedValue
+    error = actualValue - predictedValue
+
+    return error
