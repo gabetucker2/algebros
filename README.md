@@ -2,6 +2,17 @@
 
 SCHEMATIC: https://lucid.app/lucidchart/99ecfd6f-5dfe-4e79-a7a0-e12c4c0d66b9/edit?viewport_loc=-11%2C-11%2C1299%2C848%2C0_0&invitationId=inv_3c36b8f3-85a9-4b5e-9f6f-10da5a832ae1
 
-TODO:
- * Decide on a model
- * Allocate tasks to different team members
+Noting that t0 means t, t1 means t-1, t2 means t-2, etc...
+
+```
+outer chunk (dictionary): {
+    "inputs" (list of lists of floats): [
+        [dlOpen_t, clOpen_t],
+        [dlTarget_t1, dlOpen_t1, clOpen_t1, clHigh_t1, clLow_t1, clClose_t1, clAdjClose_t1, clVolume_t1], # inner chunk
+        [dlTarget_t2, dlOpen_t2, clOpen_t2, clHigh_t2, clLow_t2, clClose_t2, clAdjClose_t2, clVolume_t2],
+        ...,
+        [dlTarget_tN, dlOpen_tN, clOpen_tN, clHigh_tN, clLow_tN, clClose_tN, clAdjClose_tN, clVolume_tN],
+    ]
+    "target" (float): dlTarget_t
+}
+```

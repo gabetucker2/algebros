@@ -1,14 +1,17 @@
-# imports
+# script imports
 import functions as F
 import parameters as P
+
+# library imports
+# TODO: add
 
 # shell
 F.tryPrintBreak()
 F.tryPrint("TEST START")
 
 ######################################################
-# main routine
-F.tryPrint(P.inputFolderPath)
+
+
 
 ######################################################
 

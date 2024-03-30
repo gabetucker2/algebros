@@ -1,15 +1,37 @@
-# imports
-
+# script imports
 import functions as F
-import parameters as p
+import parameters as P
 
 # shell
 F.tryPrintBreak()
 F.tryPrint("MODEL START")
 
 ######################################################
-# main routine
 
+# import training data
+F.tryPrint("Importing training data")
+
+fields, CLValues = F.decodeCSV(P.clDataPath)
+_, DLValues = F.decodeCSV(P.dlDataPath)
+
+# run main routine
+averageError = 0
+
+for epoch in P.epochs:
+
+    error = 0
+    
+    for chunk in trainingData:
+    # train
+        train(F.unpackChunk(chunk))
+
+    for chunk in testingData:
+    # test
+        totalError += ?
+    
+        error = totalError / nTestData
+
+averageError = totalError / nEpochs
 
 ######################################################
 
