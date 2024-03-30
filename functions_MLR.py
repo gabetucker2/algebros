@@ -17,15 +17,15 @@ def trainMLRLoop(chunk):
 
     X_train = []
     
-    dlTarget_t, dlOpen_t, clOpen_t, innerChunkn = F.unpackChunkOuter(chunk)
+    daTarget_t, daOpen_t, clOpen_t, innerChunkn = F.unpackChunkOuter(chunk)
 
-    X_train.append(dlOpen_t, clOpen_t)
+    X_train.append(daOpen_t, clOpen_t)
 
     for n in range(P.N):
-        dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn = F.unpackChunkInner(innerChunkn[n])
-        X_train.append(dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn)
+        daTarget_tn, daOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn = F.unpackChunkInner(innerChunkn[n])
+        X_train.append(daTarget_tn, daOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn)
 
-    Y_train = dlTarget_t
+    Y_train = daTarget_t
 
     model = sm.OLS(Y_train, X_train).fit()
 
@@ -53,15 +53,15 @@ def testMLR(chunk):
 
     X_train = []
     
-    dlTarget_t, dlOpen_t, clOpen_t, innerChunkn = F.unpackChunkOuter(chunk)
+    daTarget_t, daOpen_t, clOpen_t, innerChunkn = F.unpackChunkOuter(chunk)
 
-    X_train.append(dlOpen_t, clOpen_t)
+    X_train.append(daOpen_t, clOpen_t)
 
     for n in range(P.N):
-        dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn = F.unpackChunkInner(innerChunkn[n])
-        X_train.append(dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn)
+        daTarget_tn, daOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn = F.unpackChunkInner(innerChunkn[n])
+        X_train.append(daTarget_tn, daOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn)
 
-    actualValue = dlTarget_t
+    actualValue = daTarget_t
 
     predictedValue = P.workingMemory[0]
     # dot product to calculate predicted value

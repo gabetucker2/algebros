@@ -3,6 +3,7 @@ import parameters as P
 
 # library imports
 import csv
+import random
 
 # helper functions
 
@@ -36,61 +37,63 @@ def decodeCSV(filePath):
 
         return fields, values
 
-def dataPipeline(dlTargetName, CLData, DLData):
+def filterColumns(daTargetName, fieldNames, clData, daData):
 
-    workingChunk1 = []
-    t = 0
+    outerChunks = []
 
-    def filterColumns():
-
-        workingChunk1.append(t)        # t
-        t += 1
-
-        workingChunk1.append(CLData[?]) # cl_open
-        workingChunk1.append(CLData[?]) # cl_high
-        workingChunk1.append(CLData[?]) # cl_low
-        workingChunk1.append(CLData[?]) # cl_close
-        workingChunk1.append(CLData[?]) # cl_adjclose
-        workingChunk1.append(CLData[?]) # cl_vol
-                                    
-        workingChunk1.append(DLData[?]) # dl_open
-        workingChunk1.append(DLData[?]) # dl_target
-
-    def splitRows():
-        
-        
+    T = len(clData) # total number of timesteps
     
-    return ''
+    for t in range(P.N, T):
 
-def makeChunk(t, dlTarget, data):
+        # create outer chunk
 
-    innerChunks = []
+        outerChunk = {
+            "inputs" : [
+                [daData[t][1], clData[t][1]]
+            ],
+            "target" : daData[t][fieldNames.index(daTargetName)]
+        }
 
-    for  in :
-        dlTarget_tn = data[t][?]
+        # create inner chunk
 
-        innerChunk = dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn
-        innerChunks.append(innerChunk)
+        innerChunks = []
 
-    chunk = {
-        "inputs" : [
-            [data[t][]??]
-        ],
-        "target" : dlTarget
-    }
+        for n in range(1, P.N): # n-back
 
-    chunk["inputs"].extend(prevChunks)
+            tn = t - n
 
-    return chunk
+            newList = []
 
-# unpackChunkOuter(chunk) -> dlTarget_t, dlOpen_t, clOpen_t, innerChunk
+            newList.append(daData[tn][fieldNames.index(daTargetName)]) # da_target
+            newList.append(daData[tn][1])                              # da_open
+
+            newList.append(clData[tn][1])                              # cl_open
+            newList.append(clData[tn][2])                              # cl_high
+            newList.append(clData[tn][3])                              # cl_low
+            newList.append(clData[tn][4])                              # cl_close
+            newList.append(clData[tn][5])                              # cl_adjclose
+            newList.append(clData[tn][6])                              # cl_vol
+
+            innerChunks.append(newList)
+        
+        outerChunk["inputs"].extend(innerChunks)
+    
+    return outerChunks
+
+def splitRows():
+    
+    rand_ui = random.random()
+
+    
+
+# unpackChunkOuter(chunk) -> daTarget_t, daOpen_t, clOpen_t, innerChunk
 def unpackChunkOuter(chunk):
 
-    # dlTarget_t, dlOpen_t, clOpen_t, innerChunk
+    # daTarget_t, daOpen_t, clOpen_t, innerChunk
     return chunk["target"], chunk["inputs"][0][0], chunk["inputs"][0][1], chunk["inputs"][1:]
 
-# unpackChunkInner(innerChunkn) -> dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn
+# unpackChunkInner(innerChunkn) -> daTarget_tn, daOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn
 def unpackChunkInner(innerChunkn):
     
-    # dlTarget_tn, dlOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn
+    # daTarget_tn, daOpen_tn, clOpen_tn, clHigh_tn, clLow_tn, clClose_tn, clAdjClose_tn, clVolume_tn
     return innerChunkn[0], innerChunkn[1], innerChunkn[2], innerChunkn[3], innerChunkn[4], innerChunkn[5], innerChunkn[6], innerChunkn[7]

@@ -11,8 +11,8 @@ F.tryPrint("MODEL START")
 # import training data
 F.tryPrint("Importing training data")
 
-fields, CLValues = F.decodeCSV(P.clDataPath)
-_, DLValues = F.decodeCSV(P.dlDataPath)
+fields, clData = F.decodeCSV(P.clDataPath)
+_, daData = F.decodeCSV(P.daDataPath)
 
 # run main routine
 averageError = 0

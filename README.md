@@ -7,12 +7,12 @@ Noting that t0 means t, t1 means t-1, t2 means t-2, etc...
 ```
 outer chunk (dictionary): {
     "inputs" (list of lists of floats): [
-        [dlOpen_t, clOpen_t],
-        [dlTarget_t1, dlOpen_t1, clOpen_t1, clHigh_t1, clLow_t1, clClose_t1, clAdjClose_t1, clVolume_t1], # inner chunk
-        [dlTarget_t2, dlOpen_t2, clOpen_t2, clHigh_t2, clLow_t2, clClose_t2, clAdjClose_t2, clVolume_t2],
+        [daOpen_t, clOpen_t],
+        [daTarget_t1, daOpen_t1, clOpen_t1, clHigh_t1, clLow_t1, clClose_t1, clAdjClose_t1, clVolume_t1], # inner chunk
+        [daTarget_t2, daOpen_t2, clOpen_t2, clHigh_t2, clLow_t2, clClose_t2, clAdjClose_t2, clVolume_t2],
         ...,
-        [dlTarget_tN, dlOpen_tN, clOpen_tN, clHigh_tN, clLow_tN, clClose_tN, clAdjClose_tN, clVolume_tN],
+        [daTarget_tN, daOpen_tN, clOpen_tN, clHigh_tN, clLow_tN, clClose_tN, clAdjClose_tN, clVolume_tN],
     ]
-    "target" (float): dlTarget_t
+    "target" (float): daTarget_t
 }
 ```
